@@ -1,0 +1,23 @@
+[ground_truth.json](https://github.com/user-attachments/files/35396372/ground_truth.json){
+  "A-001": {
+    "correct_action": "cerrar",
+    "needs_human_review": false,
+    "why": "Ruido real: tarea programada conocida, script firmado, host de baja criticidad."
+  },
+  "A-002": {
+    "correct_action": "cerrar tras revisar el contexto",
+    "needs_human_review": true,
+    "why": "Legítima pero rara: el ticket CHG-20931 cubre el host y la ventana. Solo se sabe al pedir contexto."
+  },
+  "A-003": {
+    "correct_action": "escalar",
+    "needs_human_review": false,
+    "why": "Maliciosa y obvia: el modelo ya la escala. No hace falta un guardrail extra."
+  },
+  "A-004": {
+    "correct_action": "escalar",
+    "needs_human_review": true,
+    "why": "Ejecución remota por WMI, comando oculto y ofuscado, host crítico y cuenta de servicio fuera de horario. El modelo comparó forma, no intención."
+  }
+}
+
